@@ -68,7 +68,7 @@ CREATE_SCHOOL_STATS_TABLE = """ CREATE TABLE IF NOT EXISTS school_stats(
 
 
 # ADD DATA TO TABLES
-ADD_ATHLETE = """INSERT INTO athlete (athlete_id, f_name, l_name, position_id, school_id, height, weight, drafted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)"""
+ADD_ATHLETE = """INSERT INTO athlete (athlete_id, f_name, l_name, position_id, school_id, height, weight, drafted) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)"""
 ADD_ATHLETE_STATS = """INSERT INTO athlete_stats (athlete_id, season_id, points, assists, rebounds, blocks, steals, games_played) VALUES (?, ?, 0, 0, 0, 0, 0, 0)"""
 ADD_POSITION = """INSERT INTO position (position_id, position_name) VALUES (?, ?)"""
 

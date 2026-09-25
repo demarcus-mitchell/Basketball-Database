@@ -42,9 +42,9 @@ def create_draft_pick_table():
         connection.execute(queries.CREATE_DRAFT_PICK_TABLE)
 
 # ADD FUNCTIONS
-def add_athlete(f_name, l_name, position_id, height, weight, drafted):
+def add_athlete(f_name, l_name, position_id, school_id, height, weight, drafted):
     with connection:
-        connection.execute(queries.ADD_ATHLETE, (f_name, l_name, position_id, height, weight, drafted))
+        connection.execute(queries.ADD_ATHLETE, (f_name, l_name, position_id, school_id, height, weight, drafted))
 
 def add_athlete_stats(points, assists, rebounds, blocks, steals, games_played):
     with connection:

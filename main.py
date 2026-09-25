@@ -44,6 +44,17 @@ def prompt_add_draft():
     draft_year = input("Draft Year: ")
     return draft_id, draft_year
 
+def prompt_add_athlete():
+    f_name = input("First Name: ")
+    l_name = input("Last Name: ")
+    position_id = input("Position (1-5): ")
+    school_id = input("School (ex. UTK): ")
+    height = input("Height (in): ")
+    weight = input("Weight (lbs): ")
+    draft_id = input("Drafted (Y/N): ")
+
+    return f_name, l_name, position_id, school_id, height, weight, draft_id
+
 
 #print funcs
 def print_positions(positions):
@@ -92,7 +103,9 @@ while (user_input := input(menu)) != "12":
         database.add_draft(draft_id, draft_year)
 
     elif user_input == "5":
-        pass
+        f_name, l_name, position_id, height, school, weight, drafted = prompt_add_athlete()
+        database.add_athlete(f_name, l_name, position_id, height, school, weight, drafted)
+
     elif user_input == "6":
         pass
     elif user_input == "7":
