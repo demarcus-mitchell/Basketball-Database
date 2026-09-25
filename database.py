@@ -2,45 +2,74 @@ import sqlite3
 import queries
 
 
-# <------------
+
 
 connection = sqlite3.connect("data.db")
 
 
-# Functions
+# CREATE TABLE FUNCTIONS
 
-def create_tables():
+def create_position_table():
     with connection:
-        connection.execute(CREATE_TABLES)
+        connection.execute(queries.CREATE_POSITION_TABLE)
 
-def add_athlete():
+def create_season_table():
     with connection:
-        connection.execute(ADD_ATHLETE)
+        connection.execute(queries.CREATE_SEASON_TABLE)
 
-def add_athlete_stats():
+def create_school_table():
     with connection:
-        connection.execute(ADD_ATHLETE_STATS)
+        connection.execute(queries.CREATE_SCHOOL_TABLE)
 
-def add_position():
+def create_draft_table():
     with connection:
-        connection.execute(ADD_POSITION)
+        connection.execute(queries.CREATE_DRAFT_TABLE)
 
-def add_school():
+def create_athlete_table():
     with connection:
-        connection.execute(ADD_SCHOOL)
+        connection.execute(queries.CREATE_ATHLETE_TABLE)
 
-def add_school_stats():
+def create_athlete_stats_table():
     with connection:
-        connection.execute(ADD_SCHOOL_STATS)
+        connection.execute(queries.CREATE_ATHLETE_STATS_TABLE)
 
-def add_draft():
+def create_school_stats_table():
     with connection:
-        connection.execute(ADD_DRAFT)
+        connection.execute(queries.CREATE_SCHOOL_STATS_TABLE)
 
-def add_draft_stats():
+def create_draft_pick_table():
     with connection:
-        connection.execute(ADD_DRAFT_PICK)
+        connection.execute(queries.CREATE_DRAFT_PICK_TABLE)
 
-def add_season():
+# ADD FUNCTIONS
+def add_athlete(f_name, l_name, position_id, height, weight, drafted):
     with connection:
-        connection.execute(ADD_SEASON)
+        connection.execute(queries.ADD_ATHLETE, (f_name, l_name, position_id, height, weight, drafted))
+
+def add_athlete_stats(points, assists, rebounds, blocks, steals, games_played):
+    with connection:
+        connection.execute(queries.ADD_ATHLETE_STATS, (points, assists, rebounds, blocks, steals, games_played))
+
+def add_position(position_id, position_name):
+    with connection:
+        connection.execute(queries.ADD_POSITION, (position_id, position_name))
+
+def add_school(school_id, school_name, school_location, school_conference):
+    with connection:
+        connection.execute(queries.ADD_SCHOOL, (school_id, school_name, school_location, school_conference))
+
+def add_school_stats(school_id, season_id, points, assists, rebounds, blocks, steals, wins, losses):
+    with connection:
+        connection.execute(queries.ADD_SCHOOL_STATS, (school_id, season_id, points, assists, rebounds, blocks, steals, wins, losses))
+
+def add_draft(draft_id, draft_year,):
+    with connection:
+        connection.execute(queries.ADD_DRAFT, (draft_id, draft_year))
+
+def add_draft_stats(draft_id, athlete_id, draft_round, round_pick, overall_selection):
+    with connection:
+        connection.execute(queries.ADD_DRAFT_PICK, (draft_id, athlete_id, draft_round, round_pick, overall_selection))
+
+def add_season(season_id, season_year):
+    with connection:
+        connection.execute(queries.ADD_SEASON, (season_id, season_year))

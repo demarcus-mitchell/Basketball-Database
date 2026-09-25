@@ -2,33 +2,95 @@ import database
 
 
 menu = '''\nWhat would you like to do?
-1. Add new athlete.
+1. Add positions.
 2. Add new school.
 3. Add new season.
-4. View athlete stats.
-5. View athlete vs league averages.
-6. View position stats.
-7. View athlete rank by stats.
-8. Update athlete stats.\
-9. Update athlete demographics.
-10. Exit program.
+4. Add draft.
+5. Add athlete.
+6. View athlete stats.
+7. View athlete vs league averages.
+8. View position stats.
+9. View athlete rank by stats.
+10. Update athlete stats.
+11. Update athlete.
+12. Exit program.
 
 Your selection: '''
 welcome = "Welcome to Stat Tracker!"
 
+#prompts
+def prompt_add_positions():
+    position_id = input("Position ID: ")
+    position_name = input("Position Name: ")
+
+    return position_id, position_name
+
+def prompt_add_new_school():
+    school_id = input("School ID: ")
+    school_name = input("School Name: ")
+    school_location = input("School State: ")
+    school_conference = input("Conference Name: ")
+
+    return school_id, school_name, school_location, school_conference
+
+def prompt_add_season():
+    season_id=  input("Competitive season (Ex: 2627): ")
+    season_year = input("Season start year: ")
+
+    return season_id, season_year
+
+def prompt_add_draft():
+    draft_id = input("Draft ID: ")
+    draft_year = input("Draft Year: ")
+    return draft_id, draft_year
+
+
+#print funcs
+def print_positions(positions):
+    print("|---------Positions--------|")
+    for position_id, position_name in positions:
+        print(f"{position_id}: {position_name}")
+    print("|--------------------------|")
+
+def print_schools(school):
+    print("|--------Schools--------|")
+    for school_name, school_conference in school:
+        print(f"{school_name} is in {school_conference}.")
+    print("|-----------------------|")
+
+
+
+# <------------
+
+
 print(welcome)
-database.create_tables()
+database.create_position_table()
+database.create_season_table()
+database.create_school_table()
+database.create_draft_table()
+database.create_athlete_table()
+database.create_athlete_stats_table()
+database.create_school_stats_table()
+database.create_draft_pick_table()
 
 
-while (user_input := input(menu)) != "10":
+while (user_input := input(menu)) != "12":
     if user_input == "1":
-        pass
+        position_id, position_name = prompt_add_positions()
+        database.add_position(position_id, position_name)
+
     elif user_input == "2":
-        pass
+        school_id, school_name, school_location, school_conference = prompt_add_new_school()
+        database.add_school(school_id, school_name, school_location, school_conference)
+
     elif user_input == "3":
-        pass
+        season_id, season_year = prompt_add_season()
+        database.add_season(season_id, season_year)
+
     elif user_input == "4":
-        pass
+        draft_id, draft_year = prompt_add_draft()
+        database.add_draft(draft_id, draft_year)
+
     elif user_input == "5":
         pass
     elif user_input == "6":
