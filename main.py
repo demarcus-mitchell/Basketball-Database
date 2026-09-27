@@ -7,18 +7,27 @@ menu = '''\nWhat would you like to do?
 3. Add new season.
 4. Add draft.
 5. Add athlete.
-6. View athlete stats.
-7. View athlete vs league averages.
-8. View position stats.
-9. View athlete rank by stats.
-10. Update athlete stats.
-11. Update athlete.
-12. Exit program.
+6. Update athlete.
+7. Add athlete stats.
+8. Update athlete stats.
+9. View position stats.
+10. View athlete rank by stats.
+11. View athlete vs league averages.
+12. View athlete stats.
+13. Exit program.
 
 Your selection: '''
 welcome = "Welcome to Stat Tracker!"
 
-#prompts
+# Search funcs
+def select_athlete():
+    f_name = input("First Name: ")
+    l_name = input("Last Name: ")
+    school_id = input("School (ex. UTK): ")
+
+    return f_name, l_name, school_id
+
+# Prompt funcs
 def prompt_add_positions():
     position_id = input("Position ID: ")
     position_name = input("Position Name: ")
@@ -26,7 +35,7 @@ def prompt_add_positions():
     return position_id, position_name
 
 def prompt_add_new_school():
-    school_id = input("School ID: ")
+    school_id = input("School (ex. UTK): ")
     school_name = input("School Name: ")
     school_location = input("School State: ")
     school_conference = input("Conference Name: ")
@@ -55,8 +64,18 @@ def prompt_add_athlete():
 
     return f_name, l_name, position_id, school_id, height, weight, draft_id
 
+def prompt_add_athlete_stats():
+    season_id = input("Season: (EX: 2627): ")
+    points = input("Points Scored: " )
+    assists = input = ("Assists: ")
+    rebounds = input = ("Rebounds: ")
+    blocks = input = ("Blocks: ")
+    steals = input("Steals :")
+    games_played = ("Games Played: ")
 
-#print funcs
+    return season_id, points, assists, rebounds, blocks, steals, games_played
+
+#View funcs
 def print_positions(positions):
     print("|---------Positions--------|")
     for position_id, position_name in positions:
@@ -103,10 +122,19 @@ while (user_input := input(menu)) != "12":
         database.add_draft(draft_id, draft_year)
 
     elif user_input == "5":
-        f_name, l_name, position_id, height, school, weight, drafted = prompt_add_athlete()
-        database.add_athlete(f_name, l_name, position_id, height, school, weight, drafted)
+        f_name, l_name, position_id, school, height, weight, drafted = prompt_add_athlete()
+        database.add_athlete(f_name, l_name, position_id, school, height, weight, drafted)
 
     elif user_input == "6":
+        f_name, l_name, school_id = select_athlete()
+        season_id, points, assists, rebounds, blocks, steals, games_played = prompt_add_athlete_stats()
+        database.ADD_ATHLETE_STATS_BY_NAME, (season_id, points, assists, rebounds, blocks, steals, games_played)
+
+    elif user_input == "7":
+        pass
+    elif user_input == "8":
+        pass
+    elif user_input == "9":
         pass
     elif user_input == "7":
         pass
