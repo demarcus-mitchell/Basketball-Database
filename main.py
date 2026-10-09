@@ -1,33 +1,46 @@
 import database
 
-
 menu = '''\nWhat would you like to do?
-1. Add positions.
-2. Add new school.
-3. Add new season.
-4. Add draft.
-5. Add athlete.
-6. Update athlete.
-7. Add athlete stats.
-8. Update athlete stats.
-9. View position stats.
-10. View athlete rank by stats.
-11. View athlete vs league averages.
-12. View athlete stats.
-13. Exit program.
+1. ADD ATHLETE
+2. ADD ATHLETE STATS
+3. UPDATE ATHLETE 
+4. UPDATE ATHLETE STATS
+5. ADD NEW SCHOOL
+6. UPDATE SCHOOL STATS
+7. ADD NEW SEASON
+8. UPDATE DRAFT STATS 
+9. ADD NEW DRAFT
+10. VIEW STATS BY POSITION
+11. VIEW ATHLETES RANKED BY (Stat)
+12. VIEW ATHLETE VS CONFERENCE AVERAGES
+13. VIEW ATHLETE STATS
+14. EXIT PROGRAM
 
 Your selection: '''
 welcome = "Welcome to Stat Tracker!"
 
-# Search funcs
-def select_athlete():
+# Prompt funcs
+def prompt_add_athlete():
     f_name = input("First Name: ")
     l_name = input("Last Name: ")
-    school_id = input("School (ex. UTK): ")
+    position_id = input("Position (1-5): ")
+    school_id = input("School ID(ex. UTK): ")
+    height = input("Height (in): ")
+    weight = input("Weight (lbs): ")
+    draft_id = input("Drafted (Y/N): ")
 
-    return f_name, l_name, school_id
+    return f_name, l_name, position_id, school_id, height, weight, draft_id
 
-# Prompt funcs
+def prompt_add_athlete_stats():
+    season_id = input("Season ID: (EX: 2627): ")
+    points = input("Points Scored: " )
+    assists = input("Assists: ")
+    rebounds = input("Rebounds: ")
+    blocks = input("Blocks: ")
+    steals = input("Steals :")
+    games_played = input("Games Played: ")
+
+    return season_id, points, assists, rebounds, blocks, steals, games_played
 def prompt_add_positions():
     position_id = input("Position ID: ")
     position_name = input("Position Name: ")
@@ -35,7 +48,7 @@ def prompt_add_positions():
     return position_id, position_name
 
 def prompt_add_new_school():
-    school_id = input("School (ex. UTK): ")
+    school_id = input("School ID(ex. UTK): ")
     school_name = input("School Name: ")
     school_location = input("School State: ")
     school_conference = input("Conference Name: ")
@@ -53,27 +66,6 @@ def prompt_add_draft():
     draft_year = input("Draft Year: ")
     return draft_id, draft_year
 
-def prompt_add_athlete():
-    f_name = input("First Name: ")
-    l_name = input("Last Name: ")
-    position_id = input("Position (1-5): ")
-    school_id = input("School (ex. UTK): ")
-    height = input("Height (in): ")
-    weight = input("Weight (lbs): ")
-    draft_id = input("Drafted (Y/N): ")
-
-    return f_name, l_name, position_id, school_id, height, weight, draft_id
-
-def prompt_add_athlete_stats():
-    season_id = input("Season: (EX: 2627): ")
-    points = input("Points Scored: " )
-    assists = input = ("Assists: ")
-    rebounds = input = ("Rebounds: ")
-    blocks = input = ("Blocks: ")
-    steals = input("Steals :")
-    games_played = ("Games Played: ")
-
-    return season_id, points, assists, rebounds, blocks, steals, games_played
 
 #View funcs
 def print_positions(positions):
@@ -87,7 +79,6 @@ def print_schools(school):
     for school_name, school_conference in school:
         print(f"{school_name} is in {school_conference}.")
     print("|-----------------------|")
-
 
 
 # <------------
@@ -104,14 +95,17 @@ database.create_school_stats_table()
 database.create_draft_pick_table()
 
 
-while (user_input := input(menu)) != "12":
+#database.insert_synthetic_data() #CREATES THE SYNTHETIC DATA
+"""^^^ To INSERT SYNTHETIC DATA UNCOMMENT OUT  ^^^"""
+
+while (user_input := input(menu)) != "14":
     if user_input == "1":
-        position_id, position_name = prompt_add_positions()
-        database.add_position(position_id, position_name)
+        f_name, l_name, position_id, school, height, weight, drafted = prompt_add_athlete()
+        database.add_athlete(f_name, l_name, position_id, school, height, weight, drafted)
 
     elif user_input == "2":
-        school_id, school_name, school_location, school_conference = prompt_add_new_school()
-        database.add_school(school_id, school_name, school_location, school_conference)
+        season_id, points, assists, rebounds, blocks, steals, games_played = prompt_add_athlete_stats()
+        database.add_athlete_stats_by_name(season_id, points, assists, rebounds, blocks, steals, games_played)
 
     elif user_input == "3":
         season_id, season_year = prompt_add_season()
@@ -122,13 +116,10 @@ while (user_input := input(menu)) != "12":
         database.add_draft(draft_id, draft_year)
 
     elif user_input == "5":
-        f_name, l_name, position_id, school, height, weight, drafted = prompt_add_athlete()
-        database.add_athlete(f_name, l_name, position_id, school, height, weight, drafted)
+        pass
 
     elif user_input == "6":
-        f_name, l_name, school_id = select_athlete()
-        season_id, points, assists, rebounds, blocks, steals, games_played = prompt_add_athlete_stats()
-        database.ADD_ATHLETE_STATS_BY_NAME, (season_id, points, assists, rebounds, blocks, steals, games_played)
+        pass
 
     elif user_input == "7":
         pass
@@ -144,3 +135,6 @@ while (user_input := input(menu)) != "12":
         pass
     else:
         print("Invalid selection. Please try again.")
+
+
+
