@@ -40,41 +40,39 @@ def add_position(position_id, position_name):
 def add_school(school_id, school_name, school_location, school_conference):
     with connection:
         connection.execute(queries.ADD_SCHOOL, (school_id, school_name, school_location, school_conference))
-def add_draft(draft_id, draft_year,):
+def add_draft(draft_id, draft_year):
     with connection:
         connection.execute(queries.ADD_DRAFT, (draft_id, draft_year))
 def add_athlete(f_name, l_name, position_id, school_id, height, weight, drafted):
     with connection:
         connection.execute(queries.ADD_ATHLETE, (f_name, l_name, position_id, school_id, height, weight, drafted))
-
-def add_athlete_stats_by_name(season_id, points, assists, rebounds, blocks, steals, games_played):
+def add_athlete_stats(athlete_id, season_id, points, assists, rebounds, steals, blocks, games_played):
     with connection:
-        connection.execute(queries.ADD_ATHLETE_STATS_BY_NAME, (season_id, points, assists, rebounds, blocks, steals, games_played))
+        connection.execute(queries.ADD_ATHLETE_STATS,(athlete_id, season_id, points, assists, rebounds, steals, blocks, games_played))
+def add_athlete_stats_by_name(f_name, l_name, school_id, season_id, points, assists, rebounds, blocks, steals, games_played):
+    with connection:
+        connection.execute(queries.ADD_ATHLETE_STATS_BY_NAME, (season_id, points, assists, rebounds, blocks, steals, games_played, f_name, l_name, school_id))
 
 def add_school_stats(school_id, season_id, points, assists, rebounds, blocks, steals, wins, losses):
     with connection:
         connection.execute(queries.ADD_SCHOOL_STATS, (school_id, season_id, points, assists, rebounds, blocks, steals, wins, losses))
 
-# SEARCH FUNCTIONS
-def search_athlete(athlete_id, f_name, l_name, school_id):
-    with connection:
-        cursor = connection.execute(queries.FIND_ATHLETE_ID, 
-            (f_name, l_name, school_id, athlete_id))
-        return cursor
 
 #UPDATE FUNCTIONS
 
-def update_athlete_stats_by_name(f_name, l_name, season_id, points, assists, rebounds, blocks, steals, games_played):
+def update_athlete_stats_by_name(f_name, l_name, school_id, season_id, points, assists, rebounds, blocks, steals, games_played):
     with connection:
-        cursor = connection.execute(queries.UPDATE_ATHLETE_STATS_BY_NAME, 
-            (points, assists, rebounds, blocks, steals, games_played, f_name, l_name, season_id))
-        return cursor.rowcount
+        connection.execute(queries.ADD_ATHLETE_STATS_BY_NAME, (season_id, points, assists, rebounds, blocks, steals, games_played, f_name, l_name, school_id))
 
 def add_draft_stats(draft_id, athlete_id, draft_round, round_pick, overall_selection):
     with connection:
         connection.execute(queries.ADD_DRAFT_PICK, (draft_id, athlete_id, draft_round, round_pick, overall_selection))
 
+#GET FUNCTIONS
 
+
+
+# INSERT SYNTHETIC DATA FUNCTION
 def insert_synthetic_data():
     """
     Inserts a complete synthetic dataset:
@@ -161,16 +159,16 @@ def insert_synthetic_data():
             lname = last_names[athlete_counter]
             athlete_counter += 1
 
-            # Use the existing funtion
+            # Use the existing function
             add_athlete(fname, lname, pos_id, school_id, height, weight, is_drafted)
 
             if is_drafted:
                 # We need the athlete_id → query it back
-                cur = connection.execute(
+                cursor = connection.execute(
                     "SELECT athlete_id FROM athlete WHERE f_name=? AND l_name=? AND school_id=?",
                     (fname, lname, school_id)
                 )
-                ath_id = cur.fetchone()[0]
+                ath_id = cursor.fetchone()[0]
                 drafted_athlete_ids.append(ath_id)
 
     # One extra free-agent style athlete (still attached to a school for FK)
@@ -187,25 +185,25 @@ def insert_synthetic_data():
     # ------------------------------------------------------------------
     # 7. Athlete stats (every athlete × every season)
     # ------------------------------------------------------------------
-    cur = connection.execute("SELECT athlete_id FROM athlete")
-    all_athlete_ids = [row[0] for row in cur.fetchall()]
+    cursor = connection.execute("SELECT athlete_id FROM athlete")
+    all_athlete_ids = [row[0] for row in cursor.fetchall()]
 
     athlete_stats_data = []   # keep for later aggregation
-    for ath_id in all_athlete_ids:
+    for athlete_id in all_athlete_ids:
         for season_id, _ in seasons:
-            games    = random.randint(25, 35)
-            points   = random.randint(8, 22) * games // 10
-            assists  = random.randint(2, 8)  * games // 10
-            rebounds = random.randint(3, 12) * games // 10
-            steals   = random.randint(1, 3)  * games // 10
-            blocks   = random.randint(0, 3)  * games // 10
+            games_played = random.randint(25, 35)
+            points   = random.randint(8, 22) * games_played // 10
+            assists  = random.randint(2, 8)  * games_played // 10
+            rebounds = random.randint(3, 12) * games_played // 10
+            steals   = random.randint(1, 3)  * games_played // 10
+            blocks   = random.randint(0, 3)  * games_played // 10
 
-            # ADD_ATHLETE_STATS_BY_NAME(athlete_id, season_id, points, assists, rebounds, blocks, steals, games_played)
+            ADD_ATHLETE_STATS(athlete_id, season_id, points, assists, rebounds, blocks, steals, games_played)
             add_athlete_stats_by_name(
-                ath_id, season_id, points, assists, rebounds, blocks, steals, games
+                athlete_id, season_id, points, assists, rebounds, blocks, steals, games_played
             )
             athlete_stats_data.append(
-                (ath_id, season_id, points, assists, rebounds, blocks, steals, games)
+                (athlete_id, season_id, points, assists, rebounds, blocks, steals, games_played)
             )
 
     # ------------------------------------------------------------------

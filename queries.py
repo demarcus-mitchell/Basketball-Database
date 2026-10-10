@@ -82,21 +82,21 @@ CREATE_SCHOOL_STATS_TABLE = """ CREATE TABLE IF NOT EXISTS school_stats(
     );"""
 
 # INSERT Seasons, Positions, Schools, Drafts, Athletes, Athlete Stats, School Stats
-ADD_SEASON = "INSERT INTO season (season_id, season_year) VALUES (?, ?)"
+ADD_SEASON = """INSERT INTO season (season_id, season_year) VALUES (?, ?);"""
 
-ADD_POSITION = "INSERT INTO position (position_id, position_name) VALUES (?, ?)"
+ADD_POSITION = """INSERT INTO position (position_id, position_name) VALUES (?, ?);"""
 
-ADD_SCHOOL = "INSERT INTO school (school_id, school_name, school_location, school_conference) VALUES (?, ?, ?, ?)"
+ADD_SCHOOL = """INSERT INTO school (school_id, school_name, school_location, school_conference) VALUES (?, ?, ?, ?);"""
 
-ADD_SCHOOL_STATS = "INSERT INTO school_stats (school_id, season_id, points, assists, rebounds, blocks, steals, wins, losses) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+ADD_SCHOOL_STATS = """INSERT INTO school_stats (school_id, season_id, points, assists, rebounds, blocks, steals, wins, losses) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 
-ADD_DRAFT = "INSERT INTO draft (draft_id, draft_year) VALUES (?, ?)"
+ADD_DRAFT = """INSERT INTO draft (draft_id, draft_year) VALUES (?, ?);"""
 
-ADD_DRAFT_PICK = "INSERT INTO draft_pick (draft_id, athlete_id, draft_round, round_pick, overall_selection) VALUES (?, ?, ?, ?, ?)"
+ADD_DRAFT_PICK = """INSERT INTO draft_pick (draft_id, athlete_id, draft_round, round_pick, overall_selection) VALUES (?, ?, ?, ?, ?);"""
 
-ADD_ATHLETE = "INSERT INTO athlete (f_name, l_name, position_id, school_id, height, weight, drafted) VALUES (?, ?, ?, ?, ?, ?, ?)"
+ADD_ATHLETE = """INSERT INTO athlete (f_name, l_name, position_id, school_id, height, weight, drafted) VALUES (?, ?, ?, ?, ?, ?, ?);"""
 
-ADD_ATHLETE_STATS = "INSERT INTO athlete_stats (athlete_id, season_id, points, assists, rebounds, steals, blocks, games_played) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+ADD_ATHLETE_STATS = """INSERT INTO athlete_stats (athlete_id, season_id, points, assists, rebounds, steals, blocks, games_played) VALUES (?, ?, ?, ?, ?, ?, ?, ?);"""
 
 
 #Update Draft Data, Player Stats, School Stats
@@ -110,7 +110,15 @@ UPDATE_SCHOOL_STATS = """UPDATE school_stats
         )
         AND season_id = ?;"""
 
-UPDATE_ATHLETE_STATS_BY_NAME = """UPDATE athlete_stats SET points = ?, assists = ?, rebounds = ?, blocks = ?, steals = ?, games_played = ? WHERE athlete_id = (SELECT athlete_id FROM athlete WHERE f_name = ? AND l_name = ? AND school_id = ?) AND season_id = ?;"""
+ADD_ATHLETE_STATS_BY_NAME = """INSERT INTO athlete_stats (
+    athlete_id, season_id, points, assists, rebounds, steals, blocks, games_played
+)
+SELECT 
+    athlete_id,          -- pulled from the athlete table
+    ?,                   -- season_id
+    ?, ?, ?, ?, ?, ?     -- points, assists, rebounds, steals, blocks, games_played 
+    FROM athlete 
+    WHERE f_name = ? AND l_name = ? AND school_id = ?;"""
 
 #Checks
 CHECK_IF_DRAFTED = """select * FROM (SELECT f_name, l_name, school_id FROM athlete 
@@ -129,7 +137,7 @@ VIEW_ALL_ATHLETE_STATS = "SELECT * FROM athlete_stats;" #VIEW ALL PLAYER STATS
 
 VIEW_POSITION_STATS = """SELECT * FROM athlete_stats JOIN athlete ON athlete.athlete_id = athlete_stats.athlete_id JOIN position ON athlete.position_id = position.position_id WHERE position.position_id = '?';"""
 
-VIEW_SCHOOLS = "SELECT * FROM school;"
+VIEW_SCHOOLS = """SELECT * FROM school;"""
 
 VIEW_ALL_SCHOOLS_STATS = """SELECT * FROM school_stats JOIN school ON school.school_id = school_stats.school_id;"""
 
